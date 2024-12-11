@@ -1,119 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../utils/axiosConfig';
 
-const CalendarView = ({ entries = [] }) => {
-  const today = new Date().toISOString().slice(0, 10); 
-  const [selectedDate, setSelectedDate] = useState(today);
+const CalendarView = () => {
+  const [entries, setEntries] = useState([]);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleDateChange = (event) => {
-    setSelectedDate(event.target.value);
-  };
+  useEffect(() => {
+    const fetchEntries = async () => {
+      try {
+        const { data } = await axiosInstance.get('/entries'); 
+        setEntries(data);
+      } catch (err) {
+        console.error('Error fetching entries:', err);
+        setError('Failed to fetch entries.');
+      }
+    };
 
-  const filteredEntries = Array.isArray(entries)
-    ? entries.filter((entry) => entry.date === selectedDate)
-    : [];
+    const checkAuth = async () => {
+      try {
+        const response = await axiosInstance.get('/auth/check-auth');
+        if (!response.data.isAuthenticated) {
+          navigate('/login'); 
+        } else {
+          fetchEntries(); 
+        }
+      } catch (err) {
+        console.error('Authentication check failed:', err);
+        navigate('/login'); 
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.header}>📝 My Journal</h2>
-      <div style={styles.datePickerContainer}>
-        <label htmlFor="datePicker" style={styles.datePickerLabel}>
-          Select a Date:
-        </label>
-        <input
-          id="datePicker"
-          type="date"
-          value={selectedDate}
-          onChange={handleDateChange}
-          style={styles.datePicker}
-        />
-      </div>
-      <div style={styles.entryList}>
-        {filteredEntries.length > 0 ? (
-          filteredEntries.map((entry) => (
-            <div key={entry.id} style={styles.entry}>
-              <h3 style={styles.entryTitle}>{entry.title}</h3>
-              <p style={styles.entryContent}>{entry.content}</p>
-            </div>
-          ))
-        ) : (
-          <p style={styles.noEntries}>
-            No entries found for this date. Add some thoughts and reflections!
-          </p>
-        )}
-      </div>
+    <div>
+      <h2>My Journal Entries</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <ul>
+        {entries.map(entry => (
+          <li key={entry._id}>
+            <h3>{entry.title}</h3>
+            <p>{entry.content}</p>
+            <p>Mood: {entry.mood}</p>
+            <p>Date: {new Date(entry.date).toLocaleDateString()}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    maxWidth: '600px',
-    margin: '50px auto',
-    padding: '30px',
-    background: 'linear-gradient(135deg, #e3f2fd, #90caf9)',
-    borderRadius: '15px',
-    boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)',
-    fontFamily: "'Poppins', sans-serif",
-    color: '#333',
-  },
-  header: {
-    textAlign: 'center',
-    fontSize: '2rem',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-    color: '#1e88e5',
-  },
-  datePickerContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginBottom: '20px',
-  },
-  datePickerLabel: {
-    fontSize: '1rem',
-    fontWeight: '500',
-    marginBottom: '10px',
-  },
-  datePicker: {
-    padding: '10px',
-    fontSize: '1rem',
-    borderRadius: '8px',
-    border: '1px solid #90caf9',
-    outline: 'none',
-    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-    transition: 'border-color 0.3s ease',
-  },
-  entryList: {
-    marginTop: '20px',
-  },
-  entry: {
-    background: '#ffffff',
-    padding: '20px',
-    borderRadius: '12px',
-    marginBottom: '15px',
-    boxShadow: '0 5px 10px rgba(0, 0, 0, 0.1)',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-  },
-  entryTitle: {
-    fontSize: '1.5rem',
-    fontWeight: '600',
-    color: '#1565c0',
-    marginBottom: '10px',
-  },
-  entryContent: {
-    fontSize: '1rem',
-    color: '#555',
-  },
-  noEntries: {
-    textAlign: 'center',
-    fontSize: '1rem',
-    color: '#757575',
-    fontStyle: 'italic',
-  },
-  entryHover: {
-    transform: 'translateY(-3px)',
-    boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)',
-  },
 };
 
 export default CalendarView; 

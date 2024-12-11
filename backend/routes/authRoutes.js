@@ -41,23 +41,16 @@ router.post('/login', (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) {
       console.error('Authentication error:', err);
-      return res.status(500).json({ message: 'Server error', error: err.message });
+      return res.status(500).json({ message: 'Internal server error' });
     }
-
     if (!user) {
-      return res.status(401).json({ message: 'Invalid username or password' });
+      return res.status(401).json({ message: info.message });
     }
-
     req.logIn(user, (err) => {
       if (err) {
-        console.error('Login error:', err);
-        return res.status(500).json({ message: 'Error logging in', error: err.message });
+        return res.status(500).json({ message: 'Login failed' });
       }
-
-      res.status(200).json({
-        message: 'Login successful',
-        user: { id: user._id, username: user.username, email: user.email },
-      });
+      return res.status(200).json({ message: 'Login successful', user });
     });
   })(req, res, next);
 });
@@ -68,7 +61,6 @@ router.post('/logout', (req, res) => {
       console.error('Logout error:', err);
       return res.status(500).json({ message: 'Error logging out', error: err.message });
     }
-
     res.status(200).json({ message: 'Logout successful' });
   });
 });

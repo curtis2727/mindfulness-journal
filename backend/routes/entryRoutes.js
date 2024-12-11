@@ -21,43 +21,30 @@ router.get('/', isAuthenticated, async (req, res) => {
   }
 });
 
-router.post(
-  '/',
-  isAuthenticated,
-  [
-    body('title').notEmpty().withMessage('Title is required'),
-    body('content').notEmpty().withMessage('Content is required'),
-    body('mood')
-      .notEmpty()
-      .withMessage('Mood is required')
-      .isIn(['Happy', 'Sad', 'Angry', 'Calm', 'Neutral'])
-      .withMessage('Mood must be one of: Happy, Sad, Angry, Calm, Neutral'),
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ message: 'Validation error', errors: errors.array() });
-    }
-
-    const { title, content, mood } = req.body;
-
-    try {
-      const entry = new Entry({
-        user: req.user.id,
-        title,
-        content,
-        mood,
-        date: new Date(),
-      });
-
-      await entry.save();
-      res.status(201).json(entry);
-    } catch (err) {
-      console.error('Error saving entry:', err);
-      res.status(500).json({ message: 'Error saving entry', error: err.message });
-    }
+router.post('/', isAuthenticated, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ message: 'Validation error', errors: errors.array() });
   }
-);
+
+  const { title, content, mood } = req.body;
+
+  try {
+    const entry = new Entry({
+      user: req.user.id,
+      title,
+      content,
+      mood,
+      date: new Date(),
+    });
+
+    await entry.save();
+    res.status(201).json(entry);
+  } catch (err) {
+    console.error('Error saving entry:', err);
+    res.status(500).json({ message: 'Error saving entry', error: err.message });
+  }
+});
 
 router.put(
   '/:id',

@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MoodGame from "./components/moodgame";
 import CalendarView from "./components/CalendarView"; 
+import AddJournal from './pages/AddJournal';
 import "./App.css";
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
             <Route path="/moodgame" element={<MoodGame />} />
            
             <Route path="/calendar" element={<CalendarView entries={sampleEntries} />} />
+            <Route path="/add-journal" element={<AddJournal />} />
           </Routes>
         </div>
       </div>

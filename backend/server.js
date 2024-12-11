@@ -5,7 +5,6 @@ const session = require('express-session');
 const passport = require('passport');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const MongoStore = require('connect-mongo');
 
 require('./config/passport');
 
@@ -23,16 +22,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || 'defaultsecret',
+    secret: 'your_secret_key',
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
-    cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
-      maxAge: 1000 * 60 * 60 * 24,
-    },
+    cookie: { secure: false }
   })
 );
 
@@ -42,9 +35,10 @@ app.use(passport.session());
 app.use('/auth', require('./routes/authRoutes'));
 app.use('/entries', require('./routes/entryRoutes'));
 
-const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/mindfulnessJournal';
+const mongoUri = 'mongodb+srv://curtissrafiei:2727Curtis@mindfullness.yhhiy.mongodb.net/mindfulnessJournalDB?retryWrites=true&w=majority';
+console.log('MongoDB URI:', mongoUri);
 mongoose
-  .connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 5000 })
+  .connect(mongoUri, { serverSelectionTimeoutMS: 5000 })
   .then(() => console.log('✅ Connected to MongoDB'))
   .catch((err) => {
     console.error('❌ MongoDB connection error:', err.message);
