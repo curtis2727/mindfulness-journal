@@ -6,6 +6,12 @@ const EntrySchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  title: {
+    type: String,
+    required: [true, 'Title is required'],
+    trim: true,
+    maxlength: [100, 'Title cannot exceed 100 characters']
+  },
   mood: {
     type: String,
     required: [true, 'Mood is required'],

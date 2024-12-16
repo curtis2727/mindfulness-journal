@@ -9,8 +9,12 @@ import { Doughnut } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const MoodChart = () => {
-  const data = {
+const MoodChart = ({ data }) => {
+  if (!data || data.length === 0) {
+    return null; 
+  }
+
+  const chartData = {
     labels: ['Happy', 'Sad', 'Neutral'],
     datasets: [
       {
@@ -55,11 +59,11 @@ const MoodChart = () => {
     <div style={styles.container}>
       <h2 style={styles.header}>Mood Chart</h2>
       <div style={styles.chartContainer}>
-        <Doughnut data={data} options={options} />
+        <Doughnut data={chartData} options={options} />
       </div>
       <div style={styles.legendInfo}>
-        {data.labels.map((label, index) => (
-          <div key={label} style={{ ...styles.legendItem, backgroundColor: data.datasets[0].backgroundColor[index] }}>
+        {chartData.labels.map((label, index) => (
+          <div key={label} style={{ ...styles.legendItem, backgroundColor: chartData.datasets[0].backgroundColor[index] }}>
             {label}
           </div>
         ))}

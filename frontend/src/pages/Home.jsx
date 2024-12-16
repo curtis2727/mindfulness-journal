@@ -2,53 +2,54 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../utils/axiosConfig';
 import MoodChart from '../components/MoodChart';
 import CalendarView from '../components/CalendarView';
+import { useNavigate } from 'react-router-dom';
+import './Home.css';
 
 const Home = () => {
   const [entries, setEntries] = useState([]);
-  const [error, setError] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchEntries = async () => {
+    const checkAuth = async () => {
       try {
-  
-        const { data } = await axiosInstance.get('/entries');
-        setEntries(data);
-      } catch (err) {
-        console.error('Error fetching entries:', err);
-
-        if (err.response) {
-          
-          if (err.response.status === 401) {
-            setError('Unauthorized access. Please log in to view your entries.');
-          } else {
-            setError(`Failed to fetch entries: ${err.response.statusText}`);
-          }
-        } else if (err.request) {
-          
-          setError('Server is not responding. Please check if the backend is running.');
-        } else {
+        const response = await axiosInstance.get('/auth/check-auth');
+        setIsAuthenticated(response.data.isAuthenticated);
         
-          setError(`Error: ${err.message}`);
+        if (response.data.isAuthenticated) {
+          const { data } = await axiosInstance.get('/entries');
+          setEntries(data);
         }
+      } catch (err) {
+        setIsAuthenticated(false);
       }
     };
 
-    fetchEntries();
+    checkAuth();
   }, []);
 
-  const moods = entries.reduce((acc, entry) => {
-    acc[entry.mood] = (acc[entry.mood] || 0) + 1;
-    return acc;
-  }, {});
+  const handleLoginClick = () => {
+    navigate('/login');
+  };
 
-  const moodData = ['Happy', 'Sad', 'Neutral', 'Excited'].map(
-    (mood) => moods[mood] || 0
-  );
+  if (!isAuthenticated) {
+    return (
+      <div className="welcome-container">
+        <h1>Welcome to Whispers of the Mind</h1>
+        <p>Your personal space for mindfulness and reflection</p>
+        <div className="auth-prompt">
+          <p>Please log in to view your journal entries</p>
+          <button onClick={handleLoginClick} className="login-button">
+            Login
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="home">
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <MoodChart data={moodData} />
+      <MoodChart data={entries} />
       <CalendarView entries={entries} />
     </div>
   );

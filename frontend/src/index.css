@@ -22,12 +22,24 @@ a:hover {
   color: #535bf2;
 }
 
+
 body {
   margin: 0;
   display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-image: url('/src/mindfulness4.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  font-family: 'Arial', sans-serif;
+  background-color: rgb(255, 255, 255);
+  background-blend-mode: lighten;
+  background-color: rgba(230, 173, 185, 0);
+  min-height: 100vh;
+  border: 10px solid rgba(232, 230, 103, 0.746);
 }
 
 h1 {
@@ -64,5 +76,38 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+
+input, textarea {
+  color: #333;
+  background-color: #fff;
+  font-family: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #999;
+  opacity: 1;
+}
+
+input, textarea, button {
+  text-shadow: none;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  input, textarea {
+    color: #333;
+    background-color: #fff;
+  }
+  
+  input::placeholder,
+  textarea::placeholder {
+    color: #999;
   }
 }

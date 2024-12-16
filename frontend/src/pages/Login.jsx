@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axiosInstance from '../utils/axiosConfig';
-import { useNavigate } from 'react-router-dom';
-import './Login.css'; 
+import { useNavigate, Link } from 'react-router-dom';
+import './Login.css';
 
 const Login = () => {
   const [formData, setFormData] = useState({ usernameOrEmail: "", password: "" });
@@ -9,6 +9,10 @@ const Login = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const handleClose = () => {
+    navigate('/');
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,18 +25,12 @@ const Login = () => {
     setSuccessMessage("");
     setLoading(true);
 
-    if (!formData.usernameOrEmail || !formData.password) {
-      setErrorMessage("Both username/email and password are required.");
-      setLoading(false);
-      return;
-    }
-
     try {
-      const response = await axiosInstance.post('/auth/login', formData);
+      await axiosInstance.post('/auth/login', formData);
       setSuccessMessage("Login successful!");
-      navigate('/');
+      setTimeout(() => navigate('/'), 1500);
     } catch (err) {
-      setErrorMessage("Login failed. Please check your credentials.");
+      setErrorMessage("Invalid credentials. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -40,29 +38,55 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit} className="login-form">
-        <input
-          name="usernameOrEmail"
-          placeholder="Username or Email"
-          onChange={handleChange}
-          required
-          className="form-input"
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          onChange={handleChange}
-          required
-          className="form-input"
-        />
-        <button type="submit" className="form-button" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
-        {successMessage && <p className="success-message">{successMessage}</p>}
-      </form>
+      <div className="login-box">
+        <button className="close-button" onClick={handleClose}>×</button>
+        
+        <div className="login-header">
+          <h2>Welcome Back</h2>
+          <p>Enter your credentials to access your account</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="form-group">
+            <input
+              type="text"
+              name="usernameOrEmail"
+              placeholder="Username or Email"
+              value={formData.usernameOrEmail}
+              onChange={handleChange}
+              required
+              className="form-input"
+            />
+          </div>
+
+          <div className="form-group">
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              className="form-input"
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            className={`login-button ${loading ? 'loading' : ''}`}
+            disabled={loading}
+          >
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+
+          {errorMessage && <div className="error-message">{errorMessage}</div>}
+          {successMessage && <div className="success-message">{successMessage}</div>}
+        </form>
+
+        <div className="login-footer">
+          <p>Don't have an account? <Link to="/register">Register here</Link></p>
+        </div>
+      </div>
     </div>
   );
 };

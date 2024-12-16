@@ -18,7 +18,7 @@ passport.use(
           return done(null, false, { message: 'Incorrect username or email.' });
         }
 
-        const isMatch = await user.isValidPassword(password);
+        const isMatch = await user.comparePassword(password);
         if (!isMatch) {
           return done(null, false, { message: 'Incorrect password.' });
         }

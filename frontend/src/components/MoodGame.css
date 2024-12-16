@@ -14,6 +14,7 @@ body {
   border-radius: 15px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   text-align: center;
+  position: relative;
 }
 
 .game-title {
@@ -90,4 +91,30 @@ body {
 
 .mood-box:active {
   background: #bbdefb;
+}
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #f1f1f1;
+  border: none;
+  color: #666;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.close-button:hover {
+  background: #e0e0e0;
+  color: #333;
+  transform: rotate(90deg);
 }

@@ -1,9 +1,15 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./MoodGame.css";
 
 const MoodGame = () => {
   const [score, setScore] = useState(0);
   const [feedback, setFeedback] = useState("");
+  const navigate = useNavigate();
+
+  const handleClose = () => {
+    navigate('/');
+  };
 
   const moods = [
     { emoji: "😊", mood: "Happy" },
@@ -37,6 +43,7 @@ const MoodGame = () => {
 
   return (
     <div className="mood-game-container">
+      <button className="close-button" onClick={handleClose}>×</button>
       <h1 className="game-title">Mood Game 🎮</h1>
       <p className="instructions">Drag the emoji to its matching mood!</p>
       <div className="scoreboard">Score: {score}</div>

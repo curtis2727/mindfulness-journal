@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import MoodGame from "./components/moodgame";
+import MoodGame from "./components/MoodGame";
 import CalendarView from "./components/CalendarView"; 
 import AddJournal from './pages/AddJournal';
 import "./App.css";
