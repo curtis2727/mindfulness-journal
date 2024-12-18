@@ -32,10 +32,14 @@ const AddJournal = () => {
     }
 
     try {
-      await axiosInstance.post('/entries', formData);
-      setSuccessMessage('Journal entry added successfully!');
-      setFormData({ title: '', content: '', mood: '' }); 
+      const response = await axiosInstance.post('/entries', formData);
+      if (response.data) {
+        setSuccessMessage('Journal entry added successfully!');
+        setFormData({ title: '', content: '', mood: '' });
+        setTimeout(() => navigate('/'), 1500);
+      }
     } catch (err) {
+      console.error('Error saving entry:', err);
       setErrorMessage(err.response?.data?.message || 'Error adding journal entry.');
     }
   };
