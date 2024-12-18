@@ -115,7 +115,6 @@
   border-radius: 8px;
 }
 
-/* Scrollbar styling */
 .entry-content::-webkit-scrollbar {
   width: 8px;
 }
@@ -134,7 +133,6 @@
   background: rgba(0, 0, 0, 0.3);
 }
 
-/* Animation for new entries */
 @keyframes fadeIn {
   from {
     opacity: 0;
