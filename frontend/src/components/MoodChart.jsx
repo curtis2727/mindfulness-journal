@@ -1,36 +1,118 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   ArcElement,
   Tooltip,
   Legend,
+  Title
 } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
+import axiosInstance from '../utils/axiosConfig';
+import './MoodChart.css';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
-const MoodChart = ({ data }) => {
-  if (!data || data.length === 0) {
-    return null; 
+const MoodChart = () => {
+  const [moodData, setMoodData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchMoodData();
+  }, []);
+
+  const fetchMoodData = async () => {
+    try {
+      const response = await axiosInstance.get('/entries');
+      if (response.data) {
+        setMoodData(response.data);
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error('Error fetching mood data:', err);
+      setError('Failed to fetch mood data');
+      setLoading(false);
+    }
+  };
+
+  const getMoodAnalytics = () => {
+    const counts = {
+      'Happy': 0,
+      'Sad': 0,
+      'Neutral': 0,
+      'Excited': 0
+    };
+    
+    moodData.forEach(entry => {
+      if (counts.hasOwnProperty(entry.mood)) {
+        counts[entry.mood]++;
+      }
+    });
+
+    const total = Object.values(counts).reduce((acc, curr) => acc + curr, 0);
+    const percentages = {};
+    Object.keys(counts).forEach(mood => {
+      percentages[mood] = total > 0 ? ((counts[mood] / total) * 100).toFixed(1) : 0;
+    });
+    
+    return { counts, percentages };
+  };
+
+  if (loading) {
+    return <div className="mood-chart-loading">
+      <div className="loading-spinner"></div>
+      <p>Loading your mood journey...</p>
+    </div>;
   }
 
+  if (error) {
+    return <div className="mood-chart-error">
+      <p>😕 {error}</p>
+      <button onClick={fetchMoodData} className="retry-button">Try Again</button>
+    </div>;
+  }
+
+  if (!moodData || moodData.length === 0) {
+    return (
+      <div className="mood-chart-empty">
+        <h3>Start Your Mood Journey</h3>
+        <p>📝 Add journal entries to see your mood patterns!</p>
+      </div>
+    );
+  }
+
+  const { counts, percentages } = getMoodAnalytics();
+
   const chartData = {
-    labels: ['Happy', 'Sad', 'Neutral'],
+    labels: ['Happy 😊', 'Sad 😢', 'Neutral 😐', 'Excited 🎉'],
     datasets: [
       {
-        label: 'Mood Count',
-        data: [12, 19, 3], 
-        backgroundColor: ['#FF7F50', '#87CEEB', '#FFD700'],
-        hoverBackgroundColor: ['#FF6347', '#4682B4', '#FFC107'],
-        borderWidth: 3,
-        borderColor: '#fff',
-        hoverBorderColor: '#000',
+        data: [
+          counts['Happy'],
+          counts['Sad'],
+          counts['Neutral'],
+          counts['Excited']
+        ],
+        backgroundColor: [
+          'rgba(255, 193, 7, 0.8)',  
+          'rgba(3, 169, 244, 0.8)',   
+          'rgba(156, 39, 176, 0.8)',  
+          'rgba(76, 175, 80, 0.8)'    
+        ],
+        borderColor: [
+          'rgba(255, 193, 7, 1)',
+          'rgba(3, 169, 244, 1)',
+          'rgba(156, 39, 176, 1)',
+          'rgba(76, 175, 80, 1)'
+        ],
+        borderWidth: 2,
       },
     ],
   };
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'bottom',
@@ -39,75 +121,55 @@ const MoodChart = ({ data }) => {
             size: 14,
             family: "'Roboto', sans-serif",
           },
-          color: '#333',
           padding: 20,
+          usePointStyle: true,
         },
       },
       tooltip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        titleFont: { size: 16 },
-        bodyFont: { size: 14 },
-        bodySpacing: 6,
-        borderColor: '#fff',
-        borderWidth: 1,
-      },
+        callbacks: {
+          label: (context) => {
+            const label = context.label || '';
+            const value = context.raw || 0;
+            const percentage = percentages[label.split(' ')[0]];
+            return `${label}: ${value} entries (${percentage}%)`;
+          }
+        }
+      }
     },
-    cutout: '70%', 
+    cutout: '65%',
   };
 
+  const dominantMood = Object.entries(counts)
+    .reduce((a, b) => (a[1] > b[1] ? a : b))[0];
+
   return (
-    <div style={styles.container}>
-      <h2 style={styles.header}>Mood Chart</h2>
-      <div style={styles.chartContainer}>
+    <div className="mood-chart-container">
+      <h2 className="mood-chart-title">Your Mood Journey</h2>
+      <div className="mood-summary">
+        <div className="mood-stat-card total">
+          <h3>Total Entries</h3>
+          <p>{moodData.length}</p>
+        </div>
+        <div className="mood-stat-card dominant">
+          <h3>Most Frequent Mood</h3>
+          <p>{dominantMood} {dominantMood === 'Happy' ? '😊' : 
+             dominantMood === 'Sad' ? '😢' : 
+             dominantMood === 'Neutral' ? '😐' : '🎉'}</p>
+        </div>
+      </div>
+      <div className="chart-wrapper">
         <Doughnut data={chartData} options={options} />
       </div>
-      <div style={styles.legendInfo}>
-        {chartData.labels.map((label, index) => (
-          <div key={label} style={{ ...styles.legendItem, backgroundColor: chartData.datasets[0].backgroundColor[index] }}>
-            {label}
+      <div className="mood-percentages">
+        {Object.entries(percentages).map(([mood, percentage]) => (
+          <div key={mood} className={`percentage-item ${mood.toLowerCase()}`}>
+            <span className="mood-label">{mood}</span>
+            <span className="percentage-value">{percentage}%</span>
           </div>
         ))}
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    maxWidth: '500px',
-    margin: '50px auto',
-    padding: '20px',
-    borderRadius: '15px',
-    backgroundColor: '#f4f4f4',
-    boxShadow: '0 8px 15px rgba(0, 0, 0, 0.2)',
-    fontFamily: "'Roboto', sans-serif",
-    textAlign: 'center',
-  },
-  header: {
-    fontSize: '24px',
-    marginBottom: '20px',
-    color: '#444',
-  },
-  chartContainer: {
-    position: 'relative',
-    width: '100%',
-    height: '300px',
-    margin: '0 auto',
-  },
-  legendInfo: {
-    display: 'flex',
-    justifyContent: 'space-around',
-    marginTop: '20px',
-  },
-  legendItem: {
-    padding: '10px 15px',
-    borderRadius: '8px',
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: '14px',
-    textTransform: 'capitalize',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-  },
 };
 
 export default MoodChart;
