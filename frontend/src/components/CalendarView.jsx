@@ -20,7 +20,6 @@ const CalendarView = () => {
       console.error('Error fetching entries:', err);
       setError('Failed to fetch entries');
       
-      // If unauthorized, redirect to login
       if (err.response?.status === 401) {
         navigate('/login');
       }
@@ -33,13 +32,11 @@ const CalendarView = () => {
     if (confirmDelete) {
       try {
         await axiosInstance.delete(`/entries/${entryId}`);
-        // Update the entries state by filtering out the deleted entry
         setEntries(prevEntries => prevEntries.filter(entry => entry._id !== entryId));
       } catch (err) {
         console.error('Error deleting entry:', err);
         setError('Failed to delete entry');
         
-        // If unauthorized, redirect to login
         if (err.response?.status === 401) {
           navigate('/login');
         }
