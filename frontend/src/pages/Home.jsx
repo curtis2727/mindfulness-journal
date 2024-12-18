@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
 const Home = () => {
-  const [entries, setEntries] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
@@ -15,11 +14,6 @@ const Home = () => {
       try {
         const response = await axiosInstance.get('/auth/check-auth');
         setIsAuthenticated(response.data.isAuthenticated);
-        
-        if (response.data.isAuthenticated) {
-          const { data } = await axiosInstance.get('/entries');
-          setEntries(data);
-        }
       } catch (err) {
         setIsAuthenticated(false);
       }
@@ -38,7 +32,7 @@ const Home = () => {
         <h1>Welcome to Whispers of the Mind</h1>
         <p>Your personal space for mindfulness and reflection</p>
         <div className="auth-prompt">
-          <p>Please log in to view your journal entries</p>
+          <p>Please log in to view your mood tracking and journal entries</p>
           <button onClick={handleLoginClick} className="login-button">
             Login
           </button>
@@ -49,8 +43,8 @@ const Home = () => {
 
   return (
     <div className="home">
-      <MoodChart data={entries} />
-      <CalendarView entries={entries} />
+      <MoodChart />
+      <CalendarView />
     </div>
   );
 };
