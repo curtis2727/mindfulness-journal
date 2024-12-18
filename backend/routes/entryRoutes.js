@@ -13,7 +13,7 @@ const isAuthenticated = (req, res, next) => {
 
 router.get('/', isAuthenticated, async (req, res) => {
   try {
-    const entries = await Entry.find({ user: req.user.id }).sort({ date: -1 }); // Sort by most recent
+    const entries = await Entry.find({ user: req.user.id }).sort({ date: -1 }); 
     res.status(200).json(entries);
   } catch (err) {
     console.error('Error fetching entries:', err);
@@ -22,20 +22,19 @@ router.get('/', isAuthenticated, async (req, res) => {
 });
 
 router.post('/', isAuthenticated, async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ message: 'Validation error', errors: errors.array() });
-  }
-
-  const { title, content, mood } = req.body;
-
   try {
+    const { title, content, mood } = req.body;
+
+    if (!title || !content || !mood) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
     const entry = new Entry({
       user: req.user.id,
       title,
       content,
       mood,
-      date: new Date(),
+      date: new Date()
     });
 
     await entry.save();
