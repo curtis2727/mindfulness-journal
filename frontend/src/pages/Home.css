@@ -44,4 +44,39 @@
   background: #357abd;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+}
+
+.home {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.mood-tracking-section {
+  margin-bottom: 40px;
+}
+
+.mood-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.stat-card h3 {
+  color: #4a90e2;
+  margin-bottom: 10px;
+}
+
+.stat-card p {
+  font-size: 1.2rem;
+  color: #333;
 } 
