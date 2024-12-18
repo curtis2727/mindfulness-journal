@@ -1,0 +1,154 @@
+.mood-chart-container {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 30px;
+  margin: 20px auto;
+  max-width: 600px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.mood-chart-title {
+  color: #2c3e50;
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 30px;
+  font-family: 'Dancing Script', cursive;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.mood-summary {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+.mood-stat-card {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 15px 25px;
+  border-radius: 15px;
+  text-align: center;
+  flex: 1;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.mood-stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.mood-stat-card h3 {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.mood-stat-card p {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.chart-wrapper {
+  height: 350px;
+  position: relative;
+  margin: 20px 0;
+}
+
+.mood-percentages {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.percentage-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  transition: transform 0.2s ease;
+}
+
+.percentage-item:hover {
+  transform: scale(1.02);
+}
+
+.percentage-item.happy { border-left: 4px solid rgba(255, 193, 7, 1); }
+.percentage-item.sad { border-left: 4px solid rgba(3, 169, 244, 1); }
+.percentage-item.neutral { border-left: 4px solid rgba(156, 39, 176, 1); }
+.percentage-item.excited { border-left: 4px solid rgba(76, 175, 80, 1); }
+
+.mood-label {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.percentage-value {
+  font-weight: bold;
+  color: #3498db;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 15px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.mood-chart-loading,
+.mood-chart-error,
+.mood-chart-empty {
+  text-align: center;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  margin: 20px auto;
+  max-width: 500px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+}
+
+.mood-chart-error {
+  color: #e74c3c;
+}
+
+.retry-button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.retry-button:hover {
+  background: #2980b9;
+}
+
+.mood-chart-loading {
+  color: #3498db;
+}
+
+.mood-chart-empty {
+  color: #7f8c8d;
+}
+
+.mood-chart-empty h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #3498db;
+} 
