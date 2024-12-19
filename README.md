@@ -78,6 +78,13 @@ Whispers of the Mind is a full-stack web application designed to help users main
 - Score tracking
 - Visual feedback for correct/incorrect matches
 
+6. **MoodChart**
+- Added proper mood counting logic with getMoodCounts()
+_ Added Percentage calculation 
+_ Added proper error handling sor the API call
+_ Your entries being saved with the correct mood Values 
+
+
 ### Backend Structure
 
 1. **Authentication Routes (`/auth`)**
