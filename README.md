@@ -118,3 +118,34 @@ _ Your entries being saved with the correct mood Values
 
 ```javascript
 app.use(cors({
+
+You can run the Backend and FrontEnd by doing NPM start on Terminal
+
+Once you run the Backend, You should be able to see:
+Server is running at http://localhost:5004
+Connected to MongoDB
+
+One you run the Frontend, You should be able to see:
+     VITE v5.4.11  ready in 466 ms
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+
+When You register:
+You shoull be able to see the registered users on Terminal
+
+Before you want to run the BackEnd, make sure your You have added your IP Adderess to your MONGODB and you have put the right Connection String on Server.js and .env..... in some cases, you might have trouble adding your IP address for MONGODB if you are using public WIFI.
+
+If you are facing any issues with your API, You can test your API with Postman.
+
+Here is a detailed step-by-step guide on testing your API with Postman.
+Sign up for a Postman Account. ...
+Create a New Request. ...
+Enter Request Methods, Parameters. ...
+Send the Request. ...
+Create a Postman Collection. ...
+Add Requests to the Collection. ...
+Use the Postman Collection Runner. ...
+Analyze the Test Results.
+
+
